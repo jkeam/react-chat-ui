@@ -46,6 +46,7 @@ export default class ChatBubble extends React.Component {
           ...styles.chatbubbleWrapper,
         }}
       >
+        Test
         <div style={chatBubbleStyles}>
           <p style={{ ...styles.p, ...text }}>{this.props.message.message}</p>
         </div>

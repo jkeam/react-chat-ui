@@ -15,7 +15,7 @@ export default class BubbleGroup extends React.Component {
    * Parses and collects messages of one type to be grouped together.
    * @return {messageNodes} - a JSX wrapped group of messages
    */
-  renderGroup(messages: [Message], id: number) {
+  renderGroup(messages: Array<Message>, id: number) {
     const {
       bubblesCentered,
       bubbleStyles,
@@ -24,7 +24,7 @@ export default class BubbleGroup extends React.Component {
       senderName,
     } = this.props;
     const ChatBubble = chatBubble || DefaultChatBubble;
-    const sampleMessage = messages[0];
+    const sampleMessage = (messages.length > 0) ? messages[0] : null;
 
     const messageNodes = messages.map((message, i) => {
       return (

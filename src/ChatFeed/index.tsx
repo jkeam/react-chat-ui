@@ -17,7 +17,7 @@ interface ChatFeedInterface {
     hasInputField?: boolean;
     isTyping?: boolean;
     maxHeight?: number;
-    messages: any;
+    messages: Array<Message>;
     showSenderName?: boolean;
     chatBubble?: React.Component;
   };
@@ -54,22 +54,21 @@ export default class ChatFeed extends React.Component {
   /**
    * Determines what type of message/messages to render.
    */
-  renderMessages(messages: [Message]) {
+  renderMessages(messages: Array<Message>) {
     const { isTyping, bubbleStyles, chatBubble, showSenderName } = this.props;
 
     const ChatBubble = chatBubble || DefaultChatBubble;
 
-    let group = [];
+    let group: Array<Message> = new Array();
 
     const messageNodes = messages.map((message, index) => {
       group.push(message);
       // Find diff in message type or no more messages
       if (index === messages.length - 1 || messages[index + 1].id !== message.id) {
-        const messageGroup = group;
-        group = [];
+        const messageGroup: Array<Message> = group;
+        group = new Array();
         return (
           <BubbleGroup
-            key={index}
             messages={messageGroup}
             id={message.id}
             showSenderName={showSenderName}
