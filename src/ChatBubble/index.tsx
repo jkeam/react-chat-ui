@@ -40,16 +40,35 @@ export default class ChatBubble extends React.Component {
             ...userBubble,
           };
 
+    const captionStyle = (this.props.message.id === 0) ?
+      {
+        ...styles.caption,
+        ...bubblesCentered ? {} : styles.chatbubbleOrientationNormal
+      } : {
+        ...styles.caption,
+        ...bubblesCentered ? {} : styles.recipientChatbubbleOrientationNormal
+      };
+
+    const clearfix = {
+      display: 'block',
+      content: "",
+      clear: 'both'
+    };
+
     return (
-      <div
-        style={{
-          ...styles.chatbubbleWrapper,
-        }}
-      >
-        Test
-        <div style={chatBubbleStyles}>
-          <p style={{ ...styles.p, ...text }}>{this.props.message.message}</p>
+      <div>
+        <div
+          style={{
+            ...styles.chatbubbleWrapper,
+          }}
+        >
+          <div style={chatBubbleStyles}>
+            <p style={{ ...styles.p, ...text }}>{this.props.message.message}</p>
+          </div>
         </div>
+
+        { this.props.message.createdAt && <div style={captionStyle}>{this.props.message.createdAt}</div> }
+        <div style={clearfix}></div>
       </div>
     );
   }

@@ -269,7 +269,7 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
@@ -290,7 +290,7 @@ var BubbleGroup = (function (_super) {
     BubbleGroup.prototype.renderGroup = function (messages, id) {
         var _a = this.props, bubblesCentered = _a.bubblesCentered, bubbleStyles = _a.bubbleStyles, showSenderName = _a.showSenderName, chatBubble = _a.chatBubble, senderName = _a.senderName;
         var ChatBubble = chatBubble || ChatBubble_1.default;
-        var sampleMessage = messages[0];
+        var sampleMessage = (messages.length > 0) ? messages[0] : null;
         var messageNodes = messages.map(function (message, i) {
             return (React.createElement(ChatBubble, { key: i, message: message, bubblesCentered: bubblesCentered, bubbleStyles: bubbleStyles }));
         });
@@ -332,7 +332,7 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
@@ -371,12 +371,21 @@ var ChatBubble = (function (_super) {
         bubbleStyles = bubbleStyles || defaultBubbleStyles;
         var userBubble = bubbleStyles.userBubble, chatbubble = bubbleStyles.chatbubble, text = bubbleStyles.text;
         var chatBubbleStyles = this.props.message.id === 0
-            ? __assign({}, styles_1.default.chatbubble, bubblesCentered ? {} : styles_1.default.chatbubbleOrientationNormal, chatbubble, userBubble) : __assign({}, styles_1.default.chatbubble, styles_1.default.recipientChatbubble, bubblesCentered
+            ? __assign(__assign(__assign(__assign({}, styles_1.default.chatbubble), bubblesCentered ? {} : styles_1.default.chatbubbleOrientationNormal), chatbubble), userBubble) : __assign(__assign(__assign(__assign(__assign({}, styles_1.default.chatbubble), styles_1.default.recipientChatbubble), bubblesCentered
             ? {}
-            : styles_1.default.recipientChatbubbleOrientationNormal, chatbubble, userBubble);
-        return (React.createElement("div", { style: __assign({}, styles_1.default.chatbubbleWrapper) },
-            React.createElement("div", { style: chatBubbleStyles },
-                React.createElement("p", { style: __assign({}, styles_1.default.p, text) }, this.props.message.message))));
+            : styles_1.default.recipientChatbubbleOrientationNormal), chatbubble), userBubble);
+        var captionStyle = (this.props.message.id === 0) ? __assign(__assign({}, styles_1.default.caption), bubblesCentered ? {} : styles_1.default.chatbubbleOrientationNormal) : __assign(__assign({}, styles_1.default.caption), bubblesCentered ? {} : styles_1.default.recipientChatbubbleOrientationNormal);
+        var clearfix = {
+            display: 'block',
+            content: "",
+            clear: 'both'
+        };
+        return (React.createElement("div", null,
+            React.createElement("div", { style: __assign({}, styles_1.default.chatbubbleWrapper) },
+                React.createElement("div", { style: chatBubbleStyles },
+                    React.createElement("p", { style: __assign(__assign({}, styles_1.default.p), text) }, this.props.message.message))),
+            this.props.message.createdAt && React.createElement("div", { style: captionStyle }, this.props.message.createdAt),
+            React.createElement("div", { style: clearfix })));
     };
     return ChatBubble;
 }(React.Component));
@@ -407,7 +416,7 @@ exports.default = {
         float: 'right',
     },
     recipientChatbubble: {
-        backgroundColor: '#ccc',
+        backgroundColor: '#a1a1a1',
     },
     recipientChatbubbleOrientationNormal: {
         float: 'left',
@@ -418,6 +427,10 @@ exports.default = {
         fontWeight: '300',
         margin: 0,
     },
+    caption: {
+        fontSize: '0.8rem',
+        color: '#999'
+    }
 };
 
 },{}],6:[function(require,module,exports){
@@ -426,7 +439,7 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
@@ -473,12 +486,12 @@ var ChatFeed = (function (_super) {
     ChatFeed.prototype.renderMessages = function (messages) {
         var _a = this.props, isTyping = _a.isTyping, bubbleStyles = _a.bubbleStyles, chatBubble = _a.chatBubble, showSenderName = _a.showSenderName;
         var ChatBubble = chatBubble || ChatBubble_1.default;
-        var group = [];
+        var group = new Array();
         var messageNodes = messages.map(function (message, index) {
             group.push(message);
-            if (!messages[index + 1] || messages[index + 1].id !== message.id) {
+            if (index === messages.length - 1 || messages[index + 1].id !== message.id) {
                 var messageGroup = group;
-                group = [];
+                group = new Array();
                 return (React.createElement(BubbleGroup_1.default, { key: index, messages: messageGroup, id: message.id, showSenderName: showSenderName, chatBubble: ChatBubble, bubbleStyles: bubbleStyles }));
             }
             return null;
@@ -496,7 +509,7 @@ var ChatFeed = (function (_super) {
         return (React.createElement("div", { id: "chat-panel", style: styles_1.default.chatPanel },
             React.createElement("div", { ref: function (c) {
                     _this.chat = c;
-                }, className: "chat-history", style: __assign({}, styles_1.default.chatHistory, { maxHeight: maxHeight }) },
+                }, className: "chat-history", style: __assign(__assign({}, styles_1.default.chatHistory), { maxHeight: maxHeight }) },
                 React.createElement("div", { className: "chat-messages" }, this.renderMessages(this.props.messages))),
             inputField));
     };
@@ -565,6 +578,7 @@ var Message = (function () {
         this.id = messageData.id;
         this.message = messageData.message;
         this.senderName = messageData.senderName || undefined;
+        this.createdAt = messageData.createdAt || undefined;
     }
     return Message;
 }());
@@ -573,6 +587,7 @@ exports.default = Message;
 },{}],10:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.BubbleGroup = exports.Message = exports.ChatInput = exports.ChatFeed = exports.ChatBubble = void 0;
 var ChatBubble_1 = require("./ChatBubble/");
 exports.ChatBubble = ChatBubble_1.default;
 var BubbleGroup_1 = require("./BubbleGroup");

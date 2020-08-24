@@ -20,7 +20,7 @@ export default {
     float: 'right',
   },
   recipientChatbubble: {
-    backgroundColor: '#ccc',
+    backgroundColor: '#a1a1a1',
   },
   recipientChatbubbleOrientationNormal: {
     float: 'left',
@@ -31,4 +31,8 @@ export default {
     fontWeight: '300',
     margin: 0,
   },
+  caption: {
+    fontSize: '0.8rem',
+    color: '#999'
+  }
 };

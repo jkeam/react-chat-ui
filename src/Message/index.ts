@@ -2,11 +2,11 @@
  * A statndardized message object for use
  * in rendering messages in the chat feed.
  */
-
 interface MessageData {
   id: number;
   message: string;
   senderName?: string;
+  createdAt?: string;
 }
 
 export default class Message {
@@ -16,9 +16,11 @@ export default class Message {
   id: number;
   message: string;
   senderName?: string;
+  createdAt?: string;
   constructor(messageData: MessageData) {
     this.id = messageData.id; // id of the sender (0 is reserved for "blue bubble")
     this.message = messageData.message;
     this.senderName = messageData.senderName || undefined;
+    this.createdAt = messageData.createdAt || undefined;
   }
 }
